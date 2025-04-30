@@ -1,5 +1,11 @@
 <template>
-  <q-input :outlined="outlined" v-model="value" :type="isPsw ? 'password' : 'text'">
+  <q-input
+    :outlined="outlined"
+    :label="label"
+    v-model="value"
+    :type="isPsw ? 'password' : 'text'"
+    :rules="rules"
+  >
     <template v-slot:append>
       <q-icon :name="isPsw ? 'visibility' : 'visibility_off'" @click="onChangePassword" />
     </template>
@@ -7,7 +13,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, type PropType } from 'vue';
+import type { QInputProps } from 'quasar';
+
+type ValidationRuleFn = NonNullable<QInputProps['rules']>[number];
+
 export default defineComponent({
   name: 'PasswordInput',
   props: {
@@ -15,7 +25,12 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    label: String,
     outlined: Boolean,
+    rules: {
+      type: Array as PropType<ValidationRuleFn[]>,
+      default: () => [],
+    },
   },
   emits: ['update:modelValue', 'changeIcon'],
   setup(props, { emit }) {
